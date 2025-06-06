@@ -8,6 +8,7 @@
 * 程序调用WindowsAPI，不放心的可以自行编译使用。
 * 内容输入逻辑为将随机语料添加到剪贴板进行粘贴，此程序会污染你的剪贴板。
 
+![队友评价.jpg](https://s2.loli.net/2025/06/07/j8s2PcZroRWDlpS.jpg)
 相关开源仓库：
 
 https://github.com/antonpup/CounterStrike2GSI
