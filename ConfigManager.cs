@@ -5,7 +5,7 @@ namespace ImLag;
 public class ConfigManager
 {
     public KeyConfig Config { get; private set; } = new();
-    private const string ConfigFile = "KeyConfig.json";
+    private const string ConfigFile = "Config.json";
 
     public void LoadConfig()
     {
@@ -36,8 +36,9 @@ public class ConfigManager
     {
         Config = new KeyConfig
         {
-            ChatKey = "y", // 默认使用全局聊天
-            UserPlayerName = string.Empty // 首次启动时为空
+            ChatKey = "y",
+            UserPlayerName = string.Empty,
+            OnlySelfDeath = true
         };
         Console.WriteLine("已加载默认配置。");
     }
@@ -63,5 +64,6 @@ public class ConfigManager
     {
         public string ChatKey { get; set; } = "y";
         public string UserPlayerName { get; set; } = string.Empty;
+        public bool OnlySelfDeath { get; set; } = true;
     }
 }

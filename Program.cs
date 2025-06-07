@@ -9,16 +9,22 @@ namespace ImLag
 {
     internal static partial class Program
     {
+        private const string Version = "1.0.3";
+        private const string Author = "Eicy";
+        private const string Name = "ImLag";
+        private const string UpdateLog = "此版本添加了监听模式切换功能，可以切换到在队友死亡后也能发送消息，为队友找理由。";
+        
         private static GameStateListener? _gsl;
         private static ChatMessageManager _chatManager;
         private static ConfigManager _configManager;
-        private static string Author = "Eicy";
-        private static string Version = "1.0.2";
+
         private static void Main()
         {
+            Console.Title = $"{Name} v{Version} by {Author}";
+            
             _configManager = new ConfigManager();
             _configManager.LoadConfig();
-            Console.Title = $"ImLag - by {Author} Version {Version}";
+            
             if (string.IsNullOrWhiteSpace(_configManager.Config.UserPlayerName))
             {
                 SetupPlayerName();
@@ -43,9 +49,10 @@ namespace ImLag
                 Environment.Exit(0);
             }
 
+            Console.WriteLine($"=== {Name} v{Version} by {Author} ===");
             Console.WriteLine("正在监听CS2游戏事件...");
             Console.WriteLine($"当前用户玩家名: {_configManager.Config.UserPlayerName}");
-            Console.WriteLine("只有你死亡时才会发送消息");
+            Console.WriteLine($"当前监听模式: {(_configManager.Config.OnlySelfDeath ? "仅监听自己死亡" : "监听所有玩家死亡")}");
             Console.WriteLine();
             Init();
 
@@ -77,6 +84,12 @@ namespace ImLag
                     case ConsoleKey.P:
                         ChangePlayerName();
                         break;
+                    case ConsoleKey.M:
+                        ToggleMonitorMode();
+                        break;
+                    case ConsoleKey.V:
+                        ShowVersionInfo();
+                        break;
                     default:
                         Console.WriteLine("你在干什莫？");
                         Init();
@@ -87,6 +100,23 @@ namespace ImLag
             _configManager.SaveConfig();
             _chatManager.SaveMessages();
             Console.WriteLine("程序已退出。");
+        }
+
+        private static void ToggleMonitorMode()
+        {
+            _configManager.Config.OnlySelfDeath = !_configManager.Config.OnlySelfDeath;
+            _configManager.SaveConfig();
+            
+            Console.WriteLine($"\n监听模式已切换为: {(_configManager.Config.OnlySelfDeath ? "仅监听自己死亡" : "监听所有玩家死亡")}");
+            Console.WriteLine($"现在{(_configManager.Config.OnlySelfDeath ? "只有你死亡时" : "任何玩家死亡时")}都会发送消息。");
+        }
+
+        private static void ShowVersionInfo()
+        {
+            Console.WriteLine($"\n=== {Name} v{Version} ===");
+            Console.WriteLine($"作者: {Author}");
+            Console.WriteLine("GitHub: https://github.com/cneicy/ImLag");
+            Console.WriteLine($"{UpdateLog}");
         }
 
         private static void SetupPlayerName()
@@ -118,7 +148,7 @@ namespace ImLag
         {
             Console.WriteLine($"\n当前玩家名: {_configManager.Config.UserPlayerName}");
             Console.WriteLine("请输入新的玩家名:");
-
+            
             Console.Write("请输入新的玩家名（直接按Enter取消）: ");
             var playerName = Console.ReadLine();
 
@@ -138,12 +168,13 @@ namespace ImLag
             var chatKeyDescription = _configManager.Config.ChatKey switch
             {
                 "y" => "全局聊天",
-                "u" => "队内聊天",
+                "u" => "队内聊天", 
                 "enter" => "回车键",
                 _ => "自定义"
             };
 
             Console.WriteLine($"当前聊天按键: {_configManager.Config.ChatKey} ({chatKeyDescription})");
+            Console.WriteLine($"当前监听模式: {(_configManager.Config.OnlySelfDeath ? "仅监听自己死亡" : "监听所有玩家死亡")}");
             Console.WriteLine("当前死亡消息列表：");
             _chatManager.DisplayMessages();
             Console.WriteLine("控制按键说明：");
@@ -153,20 +184,24 @@ namespace ImLag
             Console.WriteLine("L - 显示当前消息列表");
             Console.WriteLine("C - 更改聊天按键设置");
             Console.WriteLine("P - 更改玩家名设置");
+            Console.WriteLine("M - 切换监听模式");
+            Console.WriteLine("V - 显示版本信息");
         }
 
         private static void OnPlayerDied(PlayerDied gameEvent)
         {
             Console.WriteLine($"检测到玩家死亡: {gameEvent.Player.Name}");
-
-            // fix只有当死亡的玩家是用户自己时才发送消息
-            if (gameEvent.Player.Name != _configManager.Config.UserPlayerName)
+            
+            if (_configManager.Config.OnlySelfDeath && gameEvent.Player.Name != _configManager.Config.UserPlayerName)
             {
-                Console.WriteLine("非本人死亡，跳过发送消息。");
+                Console.WriteLine("当前为仅监听自己死亡模式，跳过发送消息。");
                 return;
             }
+            
+            Console.WriteLine(gameEvent.Player.Name == _configManager.Config.UserPlayerName
+                ? "检测到你死了！"
+                : $"检测到队友 {gameEvent.Player.Name} 死亡！");
 
-            Console.WriteLine("检测到你死亡了！");
             var randomMessage = _chatManager.GetRandomMessage();
             if (!string.IsNullOrEmpty(randomMessage))
             {
@@ -175,7 +210,7 @@ namespace ImLag
             }
             else
             {
-                Console.WriteLine("消息列表为空，请添加一些消息。");
+                Console.WriteLine("消息列表为空，请添加消息。");
             }
         }
 
@@ -207,7 +242,7 @@ namespace ImLag
                     var keyCode = (byte)VkKeyScan(chatKey);
                     SendKey(keyCode);
                 }
-
+                
                 Thread.Sleep(150); // 等待聊天框打开
 
                 PasteFromClipboard();
@@ -317,7 +352,6 @@ namespace ImLag
                         Console.WriteLine("无效输入。");
                         return;
                     }
-
                     break;
                 default:
                     Console.WriteLine("无效选择。");
@@ -359,7 +393,6 @@ namespace ImLag
             {
                 return true;
             }
-
             var title = windowText.ToString().ToLower();
 
             return title.Contains("counter-strike") || title.Contains("cs2") || title.Contains("csgo");

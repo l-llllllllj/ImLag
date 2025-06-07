@@ -120,6 +120,4 @@ public class ChatMessageManager
             Console.WriteLine($"{i + 1}. {_messages[i]}");
         }
     }
-
-    public int MessageCount => _messages.Count;
 }
