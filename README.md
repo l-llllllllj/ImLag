@@ -160,4 +160,3 @@ _该README由DeepSeek生成_
 - 游戏状态集成: https://github.com/antonpup/CounterStrike2GSI
 - 剪贴板操作: https://github.com/CopyText/TextCopy
 - 输入模拟: https://www.nuget.org/packages/InputSimulatorCore
-```
