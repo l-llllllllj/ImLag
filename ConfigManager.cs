@@ -38,7 +38,10 @@ public class ConfigManager
         {
             ChatKey = "y",
             UserPlayerName = string.Empty,
-            OnlySelfDeath = true
+            OnlySelfDeath = true,
+            SkipWindowCheck = false,
+            ForceMode = false,
+            KeyDelay = 100
         };
         Console.WriteLine("已加载默认配置。");
     }
@@ -65,5 +68,8 @@ public class ConfigManager
         public string ChatKey { get; set; } = "y";
         public string UserPlayerName { get; set; } = string.Empty;
         public bool OnlySelfDeath { get; set; } = true;
+        public bool SkipWindowCheck { get; set; }
+        public bool ForceMode { get; set; }
+        public int KeyDelay { get; set; } = 100;
     }
 }

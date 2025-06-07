@@ -9,6 +9,7 @@
     </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="CounterStrike2GSI" Version="1.0.3.8403" />
+      <PackageReference Include="InputSimulatorPlus" Version="1.0.7" />
       <PackageReference Include="TextCopy" Version="6.2.1" />
     </ItemGroup>
 
