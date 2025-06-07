@@ -12,14 +12,19 @@ namespace ImLag
         private static GameStateListener? _gsl;
         private static ChatMessageManager _chatManager;
         private static ConfigManager _configManager;
-
+        private static string Author = "Eicy";
+        private static string Version = "1.0.2";
         private static void Main()
         {
             _configManager = new ConfigManager();
             _configManager.LoadConfig();
+            Console.Title = $"ImLag - by {Author} Version {Version}";
+            if (string.IsNullOrWhiteSpace(_configManager.Config.UserPlayerName))
+            {
+                SetupPlayerName();
+            }
 
             _chatManager = new ChatMessageManager();
-
             _chatManager.LoadMessages();
 
             _gsl = new GameStateListener(4000);
@@ -39,6 +44,8 @@ namespace ImLag
             }
 
             Console.WriteLine("正在监听CS2游戏事件...");
+            Console.WriteLine($"当前用户玩家名: {_configManager.Config.UserPlayerName}");
+            Console.WriteLine("只有你死亡时才会发送消息");
             Console.WriteLine();
             Init();
 
@@ -67,6 +74,9 @@ namespace ImLag
                     case ConsoleKey.C:
                         ChangeChatKey();
                         break;
+                    case ConsoleKey.P:
+                        ChangePlayerName();
+                        break;
                     default:
                         Console.WriteLine("你在干什莫？");
                         Init();
@@ -79,14 +89,61 @@ namespace ImLag
             Console.WriteLine("程序已退出。");
         }
 
+        private static void SetupPlayerName()
+        {
+            Console.WriteLine("=== 首次启动设置 ===");
+            Console.WriteLine("请输入你的CS2游戏内玩家名:");
+            Console.WriteLine("注意：必须与游戏内显示的玩家名完全一致（包括大小写）");
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.Write("请输入你的玩家名: ");
+                var playerName = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(playerName))
+                {
+                    _configManager.Config.UserPlayerName = playerName.Trim();
+                    _configManager.SaveConfig();
+                    Console.WriteLine($"玩家名设置成功: {playerName}");
+                    Console.WriteLine();
+                    break;
+                }
+
+                Console.WriteLine("玩家名不能为空，请重新输入。");
+            }
+        }
+
+        private static void ChangePlayerName()
+        {
+            Console.WriteLine($"\n当前玩家名: {_configManager.Config.UserPlayerName}");
+            Console.WriteLine("请输入新的玩家名:");
+
+            Console.Write("请输入新的玩家名（直接按Enter取消）: ");
+            var playerName = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(playerName))
+            {
+                Console.WriteLine("已取消修改。");
+                return;
+            }
+
+            _configManager.Config.UserPlayerName = playerName.Trim();
+            _configManager.SaveConfig();
+            Console.WriteLine($"玩家名已更新: {playerName}");
+        }
+
         private static void Init()
         {
-            Console.WriteLine($"当前聊天按键: {_configManager.Config.ChatKey} ({_configManager.Config.ChatKey switch
+            var chatKeyDescription = _configManager.Config.ChatKey switch
             {
                 "y" => "全局聊天",
                 "u" => "队内聊天",
+                "enter" => "回车键",
                 _ => "自定义"
-            }})");
+            };
+
+            Console.WriteLine($"当前聊天按键: {_configManager.Config.ChatKey} ({chatKeyDescription})");
             Console.WriteLine("当前死亡消息列表：");
             _chatManager.DisplayMessages();
             Console.WriteLine("控制按键说明：");
@@ -95,12 +152,21 @@ namespace ImLag
             Console.WriteLine("D - 删除消息");
             Console.WriteLine("L - 显示当前消息列表");
             Console.WriteLine("C - 更改聊天按键设置");
+            Console.WriteLine("P - 更改玩家名设置");
         }
 
         private static void OnPlayerDied(PlayerDied gameEvent)
         {
             Console.WriteLine($"检测到玩家死亡: {gameEvent.Player.Name}");
 
+            // fix只有当死亡的玩家是用户自己时才发送消息
+            if (gameEvent.Player.Name != _configManager.Config.UserPlayerName)
+            {
+                Console.WriteLine("非本人死亡，跳过发送消息。");
+                return;
+            }
+
+            Console.WriteLine("检测到你死亡了！");
             var randomMessage = _chatManager.GetRandomMessage();
             if (!string.IsNullOrEmpty(randomMessage))
             {
@@ -128,17 +194,26 @@ namespace ImLag
                 // 将消息复制到剪贴板
                 ClipboardService.SetText(message);
 
-                // 使用配置的聊天按键打开聊天
-                var chatKey = _configManager.Config.ChatKey.ToLower()[0];
-                var keyCode = (byte)VkKeyScan(chatKey);
+                // 根据配置的聊天按键打开聊天
+                if (_configManager.Config.ChatKey == "enter")
+                {
+                    // 直接按回车键进入聊天
+                    SendKey(0x0D); // Enter键
+                }
+                else
+                {
+                    // 使用其他聊天按键
+                    var chatKey = _configManager.Config.ChatKey.ToLower()[0];
+                    var keyCode = (byte)VkKeyScan(chatKey);
+                    SendKey(keyCode);
+                }
 
-                SendKey(keyCode);
                 Thread.Sleep(150); // 等待聊天框打开
 
                 PasteFromClipboard();
                 Thread.Sleep(100); // 等待粘贴完成
 
-                SendKey(0x0D); // Enter键
+                SendKey(0x0D); // Enter键发送消息
 
                 Console.WriteLine("消息发送完成");
             }
@@ -210,8 +285,9 @@ namespace ImLag
             Console.WriteLine("请选择聊天按键：");
             Console.WriteLine("1. Y - 全局聊天");
             Console.WriteLine("2. U - 队内聊天");
-            Console.WriteLine("3. 自定义按键");
-            Console.WriteLine("请输入选择 (1-3):");
+            Console.WriteLine("3. Enter - 回车键");
+            Console.WriteLine("4. 自定义按键");
+            Console.WriteLine("请输入选择 (1-4):");
 
             var choice = Console.ReadLine();
             switch (choice)
@@ -225,6 +301,10 @@ namespace ImLag
                     Console.WriteLine("已设置为队内聊天 (U键)");
                     break;
                 case "3":
+                    _configManager.Config.ChatKey = "enter";
+                    Console.WriteLine("已设置为回车键");
+                    break;
+                case "4":
                     Console.WriteLine("请输入自定义按键 (单个字符):");
                     var customKey = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(customKey) && customKey.Length == 1)
@@ -247,7 +327,6 @@ namespace ImLag
             _configManager.SaveConfig();
             Console.WriteLine("聊天按键设置已保存。");
         }
-
 
         [LibraryImport("user32.dll")]
         private static partial void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
@@ -280,6 +359,7 @@ namespace ImLag
             {
                 return true;
             }
+
             var title = windowText.ToString().ToLower();
 
             return title.Contains("counter-strike") || title.Contains("cs2") || title.Contains("csgo");

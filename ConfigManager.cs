@@ -36,7 +36,8 @@ public class ConfigManager
     {
         Config = new KeyConfig
         {
-            ChatKey = "y" // 默认使用全局聊天
+            ChatKey = "y", // 默认使用全局聊天
+            UserPlayerName = string.Empty // 首次启动时为空
         };
         Console.WriteLine("已加载默认配置。");
     }
@@ -61,5 +62,6 @@ public class ConfigManager
     public class KeyConfig
     {
         public string ChatKey { get; set; } = "y";
+        public string UserPlayerName { get; set; } = string.Empty;
     }
 }
