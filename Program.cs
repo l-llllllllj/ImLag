@@ -276,6 +276,10 @@ namespace ImLag
             var foregroundWindow = GetForegroundWindow();
             var windowText = new System.Text.StringBuilder(256);
             GetWindowText(foregroundWindow, windowText, 256);
+            if (windowText.ToString() == "反恐精英：全球攻势")
+            {
+                return true;
+            }
             var title = windowText.ToString().ToLower();
 
             return title.Contains("counter-strike") || title.Contains("cs2") || title.Contains("csgo");
