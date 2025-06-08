@@ -57,7 +57,8 @@ public class ConfigManager
             BindKeys = ["k", "p", "l", "m"],
             UseCfgMode = false,
             TotalCfgFiles = 5,
-            CS2Path = string.Empty
+            CS2Path = string.Empty,
+            KeySimulationMethod = 3,
         };
         Console.WriteLine("已加载默认配置。");
     }
@@ -88,5 +89,6 @@ public class ConfigManager
 
         public List<string> BindKeys { get; set; } = ["p", "k", "l", "m"];
         public string? CS2Path { get; set; } = string.Empty; // CS2游戏根目录路径
+        public int KeySimulationMethod { get; set; } = 3;
     }
 }
