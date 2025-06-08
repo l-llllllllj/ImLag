@@ -129,6 +129,7 @@ _该README由DeepSeek生成_
 
 - **优势**：
     - 不污染剪贴板
+    - 可以按快捷键手动发
 
 - **使用流程**：
     1. 切换到CFG模式 (按`T`)
@@ -145,13 +146,10 @@ _该README由DeepSeek生成_
     - 需要系统权限模拟按键操作
     - 非管理员运行时可能会出错
 
-4. **自定义消息**：
-    - 修改`Messages.json`添加客观分析战败原因
-    - 控制台中按`A`即时添加新消息
-
-5. **模式选择建议**：
-    - 追求稳定 → 选择CFG模式
-    - 追求自动化 → 选择GSI模式
+2. **竞技平台可用性**
+    - 官匹能够正常运行
+    - 完美平台偶尔不可用
+    - 5e平台不可用
 
 ![队友评价.jpg](https://s2.loli.net/2025/06/07/j8s2PcZroRWDlpS.jpg)
 
@@ -160,4 +158,3 @@ _该README由DeepSeek生成_
 - 游戏状态集成: https://github.com/antonpup/CounterStrike2GSI
 - 剪贴板操作: https://github.com/CopyText/TextCopy
 - 输入模拟: https://www.nuget.org/packages/InputSimulatorCore
-```
