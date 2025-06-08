@@ -15,10 +15,10 @@ namespace ImLag;
 [SuppressMessage("Interoperability", "CA1416:验证平台兼容性")]
 internal static partial class Program
 {
-    public const string Version = "2.0.1";
+    public const string Version = "2.0.2";
     private const string Author = "Eicy";
     private const string Name = "ImLag";
-    private const string UpdateLog = "优化CFG模式，自动创建/更新autoexec.cfg，并提供执行说明。";
+    private const string UpdateLog = "切换到CFG模式不再错误地关闭GSI。";
 
     private static GameStateListener? _gsl;
     private static ChatMessageManager _chatManager;
@@ -66,8 +66,9 @@ internal static partial class Program
         Console.WriteLine($"=== {Name} v{Version} by {Author} ===");
         if (_configManager.Config.UseCfgMode)
         {
-            Console.WriteLine("当前运行模式: CFG 模式 (通过游戏内按键发送消息)");
+            Console.WriteLine("当前运行模式: CFG 模式 (通过GSI检测死亡随机按下CFG快捷键发送消息)");
             Console.WriteLine("在此模式下，程序本身不直接发送消息，而是配置游戏内的CFG文件。");
+            Console.WriteLine($"当前监听模式: {(_configManager.Config.OnlySelfDeath ? "仅监听自己死亡" : "监听所有玩家死亡")}");
             Console.WriteLine($"请确保已按 'G'键生成CFG文件并将绑定键 '{_cfgManager.BindKeys}' 用于在游戏中发送消息。");
         }
         else
@@ -187,12 +188,6 @@ internal static partial class Program
 
         if (_configManager.Config.UseCfgMode)
         {
-            if (_gsl is { Running: true })
-            {
-                _gsl.Stop();
-                Console.WriteLine("GSI监听已停止。");
-            }
-
             Console.WriteLine("CFG模式特点：");
             Console.WriteLine("1. 在游戏内通过按键发送预设的随机消息。");
             Console.WriteLine("2. 需要先生成CFG文件 (按G键)。");
@@ -202,7 +197,23 @@ internal static partial class Program
                 Console.WriteLine("\n检测到CS2路径未设置，正在尝试自动查找...");
                 _cfgManager.FindCS2Path();
             }
+            
+            if (_gsl == null)
+            {
+                _gsl = new GameStateListener(4000);
+                if (!_gsl.GenerateGSIConfigFile("ImLag"))
+                {
+                    Console.WriteLine("无法生成GSI配置文件。");
+                }
 
+                _gsl.PlayerDied += OnPlayerDied;
+            }
+
+            if (!_gsl.Running)
+            {
+                Console.WriteLine(_gsl.Start() ? "GSI监听已启动。" : "GameStateListener启动失败。请尝试以管理员身份运行程序。");
+            }
+            
             _cfgManager.ShowCfgInstructions();
         }
         else
@@ -410,23 +421,20 @@ internal static partial class Program
 
     private static void SetupPlayerName()
     {
-        Console.WriteLine("\n=== 首次启动设置 (聊天模式GSI需要) ===");
+        Console.WriteLine("\n=== 首次启动设置 ===");
         Console.WriteLine("请输入你的CS2游戏内玩家名:");
         Console.WriteLine("注意：必须与游戏内显示的玩家名完全一致（包括大小写）");
-        Console.WriteLine("如果你主要使用CFG模式，此项可以留空。");
         Console.WriteLine();
 
         while (true)
         {
-            Console.Write("请输入你的玩家名 (直接按Enter跳过): ");
+            Console.Write("请输入你的玩家名: ");
             var playerName = Console.ReadLine();
 
             if (string.IsNullOrWhiteSpace(playerName))
             {
-                _configManager.Config.UserPlayerName = string.Empty;
-                _configManager.SaveConfig();
                 Console.WriteLine("玩家名未设置。");
-                break;
+                continue;
             }
 
             _configManager.Config.UserPlayerName = playerName.Trim();
@@ -440,7 +448,7 @@ internal static partial class Program
     private static void ChangePlayerName()
     {
         Console.WriteLine(
-            $"\n当前玩家名 (聊天模式GSI需要): {(_configManager.Config.UserPlayerName == "" ? "未设置" : _configManager.Config.UserPlayerName)}");
+            $"\n当前玩家名: {(_configManager.Config.UserPlayerName == "" ? "未设置" : _configManager.Config.UserPlayerName)}");
         Console.Write("请输入新的玩家名 (直接按Enter取消, 输入 '-' 清空): ");
         var playerName = Console.ReadLine();
 
