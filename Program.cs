@@ -13,10 +13,10 @@ namespace ImLag;
 [SuppressMessage("Interoperability", "CA1416:验证平台兼容性")]
 internal static partial class Program
 {
-    public const string Version = "2.0.4";
+    public const string Version = "2.0.5";
     private const string Author = "Eicy";
     private const string Name = "ImLag";
-    private const string UpdateLog = "优化CS检测模式、添加WinFormSendKeys模拟模式。";
+    private const string UpdateLog = "因水友比我神人，所以語料上限調整到1000。";
 
     private static GameStateListener? _gsl;
     private static ChatMessageManager _chatManager;
