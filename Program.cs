@@ -13,10 +13,10 @@ namespace ImLag;
 [SuppressMessage("Interoperability", "CA1416:验证平台兼容性")]
 internal static partial class Program
 {
-    public const string Version = "2.0.5";
-    private const string Author = "Eicy";
+    public const string Version = "2.0.6";
+    private const string Author = "Eicy、HolographicHat、ChrisCatCP";
     private const string Name = "ImLag";
-    private const string UpdateLog = "因水友比我神人，所以語料上限調整到1000。";
+    private const string UpdateLog = "将Json格式语料改为txt格式，同时若第一次启动发现目录中存在Messages.json则自动转换格式。 by ChrisCatCP";
 
     private static GameStateListener? _gsl;
     private static ChatMessageManager _chatManager;
@@ -31,10 +31,11 @@ internal static partial class Program
     private static void Main()
     {
         Console.Title = $"{Name} v{Version} by {Author}";
-
+        
         if (!IsRunningAsAdministrator())
         {
             Console.WriteLine("警告：请以管理员身份运行以确保按键发送和CFG写入正常。");
+            UpdateHandler.UpdateFrom2d0d5();
             Console.WriteLine("按任意键继续...");
             Console.ReadKey();
             Console.Clear();
