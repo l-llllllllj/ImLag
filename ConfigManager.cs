@@ -79,7 +79,7 @@ public class ConfigManager
     public class KeyConfig
     {
         public string ChatKey { get; set; } = "y";
-        public string UserPlayerName { get; set; } = string.Empty; // 用于GSI模式下的“仅自己死亡”
+        public string UserPlayerName { get; set; } = string.Empty; // 用于GSI模式下的"仅自己死亡"
         public bool OnlySelfDeath { get; set; } = true; // GSI模式选项
         public bool SkipWindowCheck { get; set; } // GSI模式选项
         public bool ForceMode { get; set; } // GSI模式选项
@@ -90,5 +90,6 @@ public class ConfigManager
         public List<string> BindKeys { get; set; } = ["p", "k", "l", "m"];
         public string? CS2Path { get; set; } = string.Empty; // CS2游戏根目录路径
         public int KeySimulationMethod { get; set; } = 3;
+        public bool UseTraditionalChinese { get; set; } = false; // false = 简体中文, true = 繁体中文
     }
 }

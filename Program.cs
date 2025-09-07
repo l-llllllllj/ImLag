@@ -1,5 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using CounterStrike2GSI;
 using CounterStrike2GSI.EventMessages;
 using TextCopy;
@@ -29,6 +30,41 @@ internal static partial class Program
 
     [STAThread]
     private static void Main()
+    {
+        // 隐藏控制台窗口
+        var handle = GetConsoleWindow();
+        ShowWindow(handle, SW_HIDE);
+        
+        if (!IsRunningAsAdministrator())
+        {
+            // 显示警告对话框
+            MessageBox.Show(
+                "警告：请以管理员身份运行以确保按键发送和CFG写入正常。",
+                "ImLag", 
+                MessageBoxButtons.OK, 
+                MessageBoxIcon.Warning);
+            UpdateHandler.UpdateFrom2d0d5();
+        }
+
+        // 初始化应用程序
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        
+        // 启动GUI
+        Application.Run(new ClickGUI());
+    }
+    
+    // 隐藏控制台窗口的相关API
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr GetConsoleWindow();
+    
+    [DllImport("user32.dll")]
+    private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+    
+    private const int SW_HIDE = 0;
+    
+    // 原有的Main方法逻辑，保留用于其他可能的调用
+    private static void ConsoleMain()
     {
         Console.Title = $"{Name} v{Version} by {Author}";
         

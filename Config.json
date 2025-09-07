@@ -1,0 +1,19 @@
+{
+  "ChatKey": "y",
+  "UserPlayerName": "",
+  "OnlySelfDeath": true,
+  "SkipWindowCheck": false,
+  "ForceMode": false,
+  "KeyDelay": 100,
+  "UseCfgMode": false,
+  "TotalCfgFiles": 5,
+  "BindKeys": [
+    "k",
+    "p",
+    "l",
+    "m"
+  ],
+  "CS2Path": "f:/progams files/steam\\steamapps\\common\\Counter-Strike Global Offensive",
+  "KeySimulationMethod": 3,
+  "UseTraditionalChinese": true
+}
