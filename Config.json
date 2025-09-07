@@ -1,6 +1,6 @@
 {
   "ChatKey": "y",
-  "UserPlayerName": "",
+  "UserPlayerName": "sensei~~",
   "OnlySelfDeath": true,
   "SkipWindowCheck": false,
   "ForceMode": false,
@@ -14,6 +14,6 @@
     "m"
   ],
   "CS2Path": "f:/progams files/steam\\steamapps\\common\\Counter-Strike Global Offensive",
-  "KeySimulationMethod": 3,
-  "UseTraditionalChinese": true
+  "KeySimulationMethod": 0,
+  "UseTraditionalChinese": false
 }

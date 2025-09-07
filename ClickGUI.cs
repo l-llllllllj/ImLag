@@ -206,7 +206,7 @@ namespace ImLag
             {
                 Text = "更新",
                 Location = new Point(260, 208),
-                Size = new Size(60, 24)
+                Size = new Size(100, 28)
             };
             _updatePlayerNameButton.Click += UpdatePlayerNameButton_Click;
             
@@ -223,7 +223,7 @@ namespace ImLag
             {
                 Text = "CFG模式设置",
                 Location = new Point(20, 60),
-                Size = new Size(360, 250),
+                Size = new Size(360, 300),
                 Visible = false
             };
             
@@ -288,7 +288,7 @@ namespace ImLag
             {
                 Text = "删除",
                 Location = new Point(180, 175),
-                Size = new Size(60, 24)
+                Size = new Size(100, 28)
             };
             _removeBindKeyButton.Click += RemoveBindKeyButton_Click;
             
