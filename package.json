@@ -1,0 +1,49 @@
+{
+  "name": "imlag-electron",
+  "version": "3.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-packager . ImLag --platform=win32 --arch=x64 --icon=build/icon.svg --out=ImLag-output --version-string.ProductName=ImLag --win32metadata.RequestedExecutionLevel=requireAdministrator",
+    "build-electron-builder": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "electron-store": "^10.1.0",
+    "fs-extra": "^11.3.1",
+    "node-key-sender": "^1.0.11",
+    "uuid": "^12.0.0"
+  },
+  "build": {
+    "appId": "com.imlag.app",
+    "productName": "ImLag",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.svg",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "build/icon.svg",
+      "uninstallerIcon": "build/icon.svg",
+      "installerHeaderIcon": "build/icon.svg",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
