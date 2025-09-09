@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImLag v3.0.0</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #14b8a6;
+            --secondary-hover: #0d9488;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            background-image: 
+                radial-gradient(at 40% 20%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(20, 184, 166, 0.05) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, rgba(20, 184, 166, 0.05) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, rgba(20, 184, 166, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--card-background);
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 24px;
+            color: var(--text-color);
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 10px 0;
+        }
+
+        .button-group {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .language-button {
+            background-color: var(--secondary-color);
+            box-shadow: 0 2px 4px rgba(20, 184, 166, 0.2);
+        }
+
+        .language-button:hover {
+            background-color: var(--secondary-hover);
+            box-shadow: 0 4px 8px rgba(20, 184, 166, 0.3);
+        }
+
+        .group-box {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            background-color: var(--card-background);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .group-box:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .group-box h2 {
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-weight: 600;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        label {
+            display: inline-block;
+            min-width: 160px;
+            font-weight: 500;
+            color: var(--text-color);
+            flex-shrink: 0;
+        }
+
+        input[type="text"], input[type="number"], select {
+            padding: 10px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            width: calc(100% - 172px);
+            font-size: 14px;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        .checkbox-group label {
+            width: auto;
+            font-weight: 500;
+            min-width: unset;
+        }
+
+        .list-management {
+            display: flex;
+            margin-bottom: 10px;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .list-management select, .list-management ul {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            height: 180px;
+            overflow-y: auto;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        .list-management select:focus, .list-management ul:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .list-management ul {
+            list-style-type: none;
+            padding: 8px;
+        }
+
+        .list-management ul li {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+        }
+
+        .list-management ul li:hover {
+            background-color: #e0e7ff;
+            border-color: var(--primary-color);
+        }
+
+        .list-management ul li.selected {
+            background-color: #e0e7ff;
+            border-color: var(--primary-color);
+        }
+
+        .list-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .list-actions button {
+            padding: 8px 12px;
+            font-size: 13px;
+            min-width: 80px;
+        }
+
+        /* 调整输入框宽度 */
+        #newMessageTextBox, #bindKeyInput {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        /* 路径选择器样式 */
+        .path-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .path-selector input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            width: auto;
+        }
+
+        .path-selector button {
+            padding: 10px 16px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        /* 状态栏样式 */
+        .status-bar {
+            margin-top: 24px;
+            padding: 12px 16px;
+            background-color: #dcfce7;
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius);
+            color: #166534;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            transition: var(--transition);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-bar.error {
+            background-color: #fee2e2;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            label {
+                min-width: unset;
+                margin-bottom: 4px;
+            }
+            
+            input[type="text"], input[type="number"], select {
+                width: 100%;
+            }
+            
+            .path-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .path-selector button {
+                width: 100%;
+            }
+            
+            .list-management {
+                flex-direction: column;
+            }
+            
+            .list-actions {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .list-actions button {
+                flex: 1;
+                margin: 0 4px;
+            }
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ImLag v3.0.0</h1>
+        
+        <div class="button-group">
+            <button id="modeSwitchButton">切换到CFG模式</button>
+            <button id="languageSwitchButton" class="language-button">切换到繁体中文</button>
+        </div>
+        
+        <div class="group-box" id="chatModeGroupBox">
+            <h2>聊天模式设置</h2>
+            
+            <div class="form-group">
+                <label id="chatKeyLabel">聊天键: </label>
+                <input type="text" id="chatKeyDisplay" readonly value="y">
+                <button id="changeChatKeyButton">更改</button>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="onlySelfDeathCheckBox" checked>
+                <label id="onlySelfDeathLabel">仅自己死亡时发送</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="skipWindowCheckCheckBox">
+                <label id="skipWindowCheckLabel">跳过窗口检测</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="forceModeCheckBox">
+                <label id="forceModeLabel">强制发送模式</label>
+            </div>
+            
+            <div class="form-group">
+                <label id="keyDelayLabel">按键延迟: </label>
+                <input type="number" id="keyDelayNumericUpDown" min="0" max="1000" value="100">
+                <span id="msLabel">毫秒</span>
+            </div>
+            
+            <div class="form-group">
+                <label id="simulationMethodLabel">模拟方式: </label>
+                <select id="simulationMethodComboBox">
+                    <option value="0">默认</option>
+                    <option value="1">InputSimulator</option>
+                    <option value="2">SendInput</option>
+                    <option value="3">WinFormSendKeys</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label id="playerNameLabel">玩家名: </label>
+                <input type="text" id="playerNameTextBox" placeholder="请输入您的游戏ID">
+                <button id="updatePlayerNameButton">更新</button>
+            </div>
+        </div>
+        
+        <div class="group-box" id="cfgModeGroupBox" style="display: none;">
+            <h2>CFG模式设置</h2>
+            
+            <div class="form-group">
+                <label id="cs2PathLabel">CS2路径: </label>
+                <div class="path-selector">
+                    <input type="text" id="cs2PathTextBox" placeholder="请选择CS2安装目录">
+                    <button id="browseCs2PathButton">浏览</button>
+                    <button id="findCs2PathButton">自动查找</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label id="bindKeysLabel">绑定键: </label>
+                <div class="list-management">
+                    <select id="bindKeysListBox" multiple>
+                        <option value="k">k</option>
+                        <option value="p">p</option>
+                        <option value="l">l</option>
+                        <option value="m">m</option>
+                    </select>
+                    <div class="list-actions">
+                        <input type="text" id="bindKeyInput" placeholder="按键">
+                        <button id="addBindKeyButton">添加</button>
+                        <button id="removeBindKeyButton">删除</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label id="totalCfgFilesLabel">CFG文件数量: </label>
+                <input type="number" id="totalCfgFilesNumericUpDown" min="1" max="100" value="5">
+                <button id="generateCfgFilesButton">生成CFG文件</button>
+            </div>
+        </div>
+        
+        <div class="group-box" id="messageManagerGroupBox">
+            <h2>消息管理</h2>
+            
+            <div class="list-management">
+                <ul id="messagesListBox"></ul>
+                <div class="list-actions">
+                    <input type="text" id="newMessageTextBox" placeholder="新消息">
+                    <button id="addMessageButton">添加</button>
+                    <button id="removeMessageButton">删除</button>
+                    <button id="clearAllMessagesButton">清空所有</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-bar" id="statusLabel">就绪</div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        // 全局变量
+        let currentConfig = {};
+        let useTraditionalChinese = false;
+        let messages = [];
+        let selectedMessageIndex = -1;
+        let selectedBindKeyIndex = -1;
+        
+        // 初始化函数
+        function initialize() {
+            // 加载配置
+            loadConfig();
+            
+            // 加载消息
+            loadMessages();
+            
+            // 绑定事件处理程序
+            bindEventHandlers();
+        }
+        
+        // 加载配置
+        function loadConfig() {
+            currentConfig = ipcRenderer.sendSync('get-config');
+            useTraditionalChinese = currentConfig.useTraditionalChinese || false;
+            
+            // 更新UI
+            document.getElementById('chatKeyDisplay').value = currentConfig.chatKey || 'y';
+            document.getElementById('onlySelfDeathCheckBox').checked = currentConfig.onlySelfDeath || true;
+            document.getElementById('skipWindowCheckCheckBox').checked = currentConfig.skipWindowCheck || false;
+            document.getElementById('forceModeCheckBox').checked = currentConfig.forceMode || false;
+            document.getElementById('keyDelayNumericUpDown').value = currentConfig.keyDelay || 100;
+            document.getElementById('simulationMethodComboBox').value = currentConfig.keySimulationMethod || 0;
+            document.getElementById('playerNameTextBox').value = currentConfig.userPlayerName || '';
+            document.getElementById('cs2PathTextBox').value = currentConfig.cs2Path || '';
+            document.getElementById('totalCfgFilesNumericUpDown').value = currentConfig.totalCfgFiles || 5;
+            
+            // 更新绑定键列表
+            updateBindKeysList();
+            
+            // 更新语言
+            updateLanguage();
+            
+            // 更新模式
+            updateModeDisplay();
+        }
+        
+        // 保存配置
+        function saveConfig() {
+            currentConfig.chatKey = document.getElementById('chatKeyDisplay').value;
+            currentConfig.onlySelfDeath = document.getElementById('onlySelfDeathCheckBox').checked;
+            currentConfig.skipWindowCheck = document.getElementById('skipWindowCheckCheckBox').checked;
+            currentConfig.forceMode = document.getElementById('forceModeCheckBox').checked;
+            currentConfig.keyDelay = parseInt(document.getElementById('keyDelayNumericUpDown').value) || 0;
+            currentConfig.keySimulationMethod = parseInt(document.getElementById('simulationMethodComboBox').value) || 0;
+            currentConfig.userPlayerName = document.getElementById('playerNameTextBox').value;
+            currentConfig.cs2Path = document.getElementById('cs2PathTextBox').value;
+            currentConfig.totalCfgFiles = parseInt(document.getElementById('totalCfgFilesNumericUpDown').value) || 5;
+            currentConfig.useTraditionalChinese = useTraditionalChinese;
+            
+            const result = ipcRenderer.sendSync('save-config', currentConfig);
+            if (result.success) {
+                updateStatus('配置已保存');
+            } else {
+                updateStatus('保存配置失败: ' + result.error, true);
+            }
+        }
+        
+        // 加载消息
+        function loadMessages() {
+            messages = ipcRenderer.sendSync('get-messages') || [];
+            updateMessagesList();
+        }
+        
+        // 保存消息
+        function saveMessages() {
+            const result = ipcRenderer.sendSync('save-messages', messages);
+            if (result.success) {
+                updateStatus('消息已保存');
+            } else {
+                updateStatus('保存消息失败: ' + result.error, true);
+            }
+        }
+        
+        // 更新消息列表
+        function updateMessagesList() {
+            const listBox = document.getElementById('messagesListBox');
+            listBox.innerHTML = '';
+            
+            messages.forEach((message, index) => {
+                const li = document.createElement('li');
+                li.textContent = message;
+                li.dataset.index = index;
+                li.onclick = () => {
+                    // 移除其他项的选中状态
+                    Array.from(listBox.children).forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    // 设置当前项的选中状态
+                    li.classList.add('selected');
+                    selectedMessageIndex = index;
+                };
+                listBox.appendChild(li);
+            });
+        }
+        
+        // 更新绑定键列表
+        function updateBindKeysList() {
+            const listBox = document.getElementById('bindKeysListBox');
+            listBox.innerHTML = '';
+            
+            (currentConfig.bindKeys || []).forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                listBox.appendChild(option);
+            });
+            
+            listBox.onchange = () => {
+                selectedBindKeyIndex = listBox.selectedIndex;
+            };
+        }
+        
+        // 更新语言
+        function updateLanguage() {
+            const translations = {
+                // 基础UI文本
+                'ImLag v': 'ImLag v',
+                '切换到CFG模式': '切換到CFG模式',
+                '切换到聊天模式': '切換到聊天模式',
+                '聊天模式设置': '聊天模式設定',
+                'CFG模式设置': 'CFG模式設定',
+                '消息管理': '消息管理',
+                
+                // 聊天模式控件
+                '聊天键: ': '聊天鍵: ',
+                '仅自己死亡时发送': '僅自己死亡時發送',
+                '跳过窗口检测': '跳過窗口檢測',
+                '强制发送模式': '強制發送模式',
+                '按键延迟: ': '按鍵延遲: ',
+                '毫秒': '毫秒',
+                '模拟方式: ': '模擬方式: ',
+                '玩家名: ': '玩家名: ',
+                '更新': '更新',
+                '更改': '更改',
+                
+                // CFG模式控件
+                'CS2路径: ': 'CS2路徑: ',
+                '浏览': '瀏覽',
+                '自动查找': '自動查找',
+                '绑定键: ': '綁定鍵: ',
+                '添加': '添加',
+                '删除': '删除',
+                'CFG文件数量: ': 'CFG文件數量: ',
+                '生成CFG文件': '生成CFG文件',
+                
+                // 消息管理控件
+                '清空所有': '清空所有',
+                
+                // 状态和提示
+                '就绪': '就緒',
+                '玩家名已更新': '玩家名已更新',
+                '警告: 玩家名不能为空': '警告: 玩家名不能為空',
+                '选择CS2安装目录': '選擇CS2安裝目錄',
+                'CS2路径已找到': 'CS2路徑已找到',
+                '错误: 无法找到CS2路径，请手动指定': '錯誤: 無法找到CS2路徑，請手動指定',
+                '警告: 请输入有效的单个字母或数字': '警告: 請輸入有效的單個字母或數字',
+                'CFG文件已成功生成': 'CFG文件已成功生成',
+                '确定要清空所有消息吗？': '確定要清空所有消息嗎？',
+                '确认': '確認',
+                '配置已保存': '配置已保存',
+                '保存配置失败: ': '保存配置失敗: ',
+                '消息已保存': '消息已保存',
+                '保存消息失败: ': '保存消息失敗: '
+            };
+            
+            // 更新语言切换按钮文本
+            document.getElementById('languageSwitchButton').textContent = useTraditionalChinese ? 
+                '切换到简体中文' : '切换到繁体中文';
+            
+            // 更新模式切换按钮文本
+            const modeButtonText = currentConfig.useCfgMode ? '切换到聊天模式' : '切换到CFG模式';
+            document.getElementById('modeSwitchButton').textContent = useTraditionalChinese ? 
+                translations[modeButtonText] : modeButtonText;
+            
+            // 直接为每个有ID的可翻译元素设置文本
+            const elementsToTranslate = [
+                {id: 'chatKeyLabel', text: '聊天键: '},
+                {id: 'onlySelfDeathLabel', text: '仅自己死亡时发送'},
+                {id: 'skipWindowCheckLabel', text: '跳过窗口检测'},
+                {id: 'forceModeLabel', text: '强制发送模式'},
+                {id: 'keyDelayLabel', text: '按键延迟: '},
+                {id: 'msLabel', text: '毫秒'},
+                {id: 'simulationMethodLabel', text: '模拟方式: '},
+                {id: 'playerNameLabel', text: '玩家名: '},
+                {id: 'updatePlayerNameButton', text: '更新'},
+                {id: 'changeChatKeyButton', text: '更改'},
+                {id: 'cs2PathLabel', text: 'CS2路径: '},
+                {id: 'browseCs2PathButton', text: '浏览'},
+                {id: 'findCs2PathButton', text: '自动查找'},
+                {id: 'bindKeysLabel', text: '绑定键: '},
+                {id: 'addBindKeyButton', text: '添加'},
+                {id: 'removeBindKeyButton', text: '删除'},
+                {id: 'totalCfgFilesLabel', text: 'CFG文件数量: '},
+                {id: 'generateCfgFilesButton', text: '生成CFG文件'},
+                {id: 'addMessageButton', text: '添加'},
+                {id: 'removeMessageButton', text: '删除'},
+                {id: 'clearAllMessagesButton', text: '清空所有'}
+            ];
+            
+            elementsToTranslate.forEach(item => {
+                const element = document.getElementById(item.id);
+                if (element) {
+                    element.textContent = useTraditionalChinese ? translations[item.text] : item.text;
+                }
+            });
+            
+            // 更新标题和组标题
+            document.querySelector('h1').textContent = 'ImLag v3.0.0';
+            document.querySelector('#chatModeGroupBox h2').textContent = 
+                useTraditionalChinese ? translations['聊天模式设置'] : '聊天模式设置';
+            document.querySelector('#cfgModeGroupBox h2').textContent = 
+                useTraditionalChinese ? translations['CFG模式设置'] : 'CFG模式设置';
+            document.querySelector('#messageManagerGroupBox h2').textContent = 
+                useTraditionalChinese ? translations['消息管理'] : '消息管理';
+            
+            // 更新状态标签
+            const statusLabel = document.getElementById('statusLabel');
+            if (statusLabel.textContent === '就绪' || statusLabel.textContent === '就緒') {
+                statusLabel.textContent = useTraditionalChinese ? translations['就绪'] : '就绪';
+            }
+        }
+        
+        // 更新模式显示
+        function updateModeDisplay() {
+            const useCfgMode = currentConfig.useCfgMode || false;
+            document.getElementById('chatModeGroupBox').style.display = useCfgMode ? 'none' : 'block';
+            document.getElementById('cfgModeGroupBox').style.display = useCfgMode ? 'block' : 'none';
+            document.getElementById('modeSwitchButton').textContent = 
+                useCfgMode ? (useTraditionalChinese ? '切換到聊天模式' : '切换到聊天模式') : 
+                (useTraditionalChinese ? '切換到CFG模式' : '切换到CFG模式');
+        }
+        
+        // 更新状态信息
+        function updateStatus(message, isError = false) {
+            const statusBar = document.getElementById('statusLabel');
+            statusBar.textContent = message;
+            
+            // 使用CSS类代替直接设置样式
+            if (isError) {
+                statusBar.classList.add('error');
+            } else {
+                statusBar.classList.remove('error');
+            }
+            
+            // 3秒后恢复默认状态
+            setTimeout(() => {
+                statusBar.textContent = useTraditionalChinese ? '就緒' : '就绪';
+                statusBar.classList.remove('error');
+            }, 3000);
+        }
+        
+        // 绑定事件处理程序
+        function bindEventHandlers() {
+            // 模式切换按钮
+            document.getElementById('modeSwitchButton').addEventListener('click', () => {
+                currentConfig.useCfgMode = !(currentConfig.useCfgMode || false);
+                updateModeDisplay();
+                saveConfig();
+            });
+            
+            // 语言切换按钮
+            document.getElementById('languageSwitchButton').addEventListener('click', () => {
+                useTraditionalChinese = !useTraditionalChinese;
+                updateLanguage();
+                saveConfig();
+            });
+            
+            // 更改聊天键按钮
+            document.getElementById('changeChatKeyButton').addEventListener('click', () => {
+                const newKey = prompt(useTraditionalChinese ? 
+                    '請輸入您想要設置的聊天鍵 (Y=全局聊天, U=隊內聊天)' : 
+                    '请输入您想要设置的聊天键 (Y=全局聊天, U=队内聊天)');
+                
+                if (newKey && newKey.length === 1 && /^[a-zA-Z0-9]$/.test(newKey)) {
+                    document.getElementById('chatKeyDisplay').value = newKey.toLowerCase();
+                    saveConfig();
+                } else if (newKey !== null) {
+                    updateStatus(useTraditionalChinese ? 
+                        '警告: 請輸入有效的單個字母或數字' : 
+                        '警告: 请输入有效的单个字母或数字', true);
+                }
+            });
+            
+            // 更新玩家名按钮
+            document.getElementById('updatePlayerNameButton').addEventListener('click', () => {
+                const playerName = document.getElementById('playerNameTextBox').value.trim();
+                if (playerName) {
+                    saveConfig();
+                    updateStatus(useTraditionalChinese ? '玩家名已更新' : '玩家名已更新');
+                } else {
+                    updateStatus(useTraditionalChinese ? '警告: 玩家名不能為空' : '警告: 玩家名不能为空', true);
+                }
+            });
+            
+            // 浏览CS2路径按钮
+            document.getElementById('browseCs2PathButton').addEventListener('click', () => {
+                ipcRenderer.send('browse-cs2-path');
+            });
+            
+            // 自动查找CS2路径按钮
+            document.getElementById('findCs2PathButton').addEventListener('click', () => {
+                updateStatus(useTraditionalChinese ? '正在查找CS2路徑...' : '正在查找CS2路径...');
+                ipcRenderer.send('find-cs2-path');
+            });
+            
+            // 生成CFG文件按钮
+            document.getElementById('generateCfgFilesButton').addEventListener('click', () => {
+                const cs2Path = document.getElementById('cs2PathTextBox').value.trim();
+                if (!cs2Path) {
+                    updateStatus(useTraditionalChinese ? '請先設置CS2路徑' : '请先设置CS2路径', true);
+                    return;
+                }
+                
+                const bindKeys = Array.from(document.getElementById('bindKeysListBox').options).map(option => option.value);
+                const totalCfgFiles = parseInt(document.getElementById('totalCfgFilesNumericUpDown').value) || 0;
+                
+                if (bindKeys.length === 0) {
+                    updateStatus(useTraditionalChinese ? '請至少添加一個綁定鍵' : '请至少添加一个绑定键', true);
+                    return;
+                }
+                
+                if (totalCfgFiles <= 0) {
+                    updateStatus(useTraditionalChinese ? 'CFG文件數量必須大於0' : 'CFG文件数量必须大于0', true);
+                    return;
+                }
+                
+                saveConfig(); // 保存最新配置
+                
+                updateStatus(useTraditionalChinese ? '正在生成CFG文件...' : '正在生成CFG文件...');
+                ipcRenderer.send('generate-cfg-files', {
+                    cs2Path,
+                    bindKeys,
+                    totalCfgFiles,
+                    messages
+                });
+            });
+            
+            // 添加绑定键按钮
+            document.getElementById('addBindKeyButton').addEventListener('click', () => {
+                const keyInput = document.getElementById('bindKeyInput');
+                const key = keyInput.value.trim().toLowerCase();
+                
+                if (key && key.length === 1 && /^[a-zA-Z0-9]$/.test(key)) {
+                    const bindKeys = currentConfig.bindKeys || [];
+                    if (!bindKeys.includes(key)) {
+                        bindKeys.push(key);
+                        currentConfig.bindKeys = bindKeys;
+                        updateBindKeysList();
+                        saveConfig();
+                        keyInput.value = '';
+                    } else {
+                        updateStatus(useTraditionalChinese ? '此按鍵已存在' : '此按键已存在', true);
+                    }
+                } else {
+                    updateStatus(useTraditionalChinese ? 
+                        '警告: 請輸入有效的單個字母或數字' : 
+                        '警告: 请输入有效的单个字母或数字', true);
+                }
+            });
+            
+            // 删除绑定键按钮
+            document.getElementById('removeBindKeyButton').addEventListener('click', () => {
+                const listBox = document.getElementById('bindKeysListBox');
+                if (selectedBindKeyIndex >= 0) {
+                    const bindKeys = currentConfig.bindKeys || [];
+                    bindKeys.splice(selectedBindKeyIndex, 1);
+                    currentConfig.bindKeys = bindKeys;
+                    updateBindKeysList();
+                    saveConfig();
+                    selectedBindKeyIndex = -1;
+                }
+            });
+            
+            // 添加消息按钮
+            document.getElementById('addMessageButton').addEventListener('click', () => {
+                const messageInput = document.getElementById('newMessageTextBox');
+                const message = messageInput.value.trim();
+                
+                if (message && !messages.includes(message)) {
+                    messages.push(message);
+                    updateMessagesList();
+                    saveMessages();
+                    messageInput.value = '';
+                } else if (message) {
+                    updateStatus(useTraditionalChinese ? '此消息已存在' : '此消息已存在', true);
+                }
+            });
+            
+            // 删除消息按钮
+            document.getElementById('removeMessageButton').addEventListener('click', () => {
+                if (selectedMessageIndex >= 0) {
+                    messages.splice(selectedMessageIndex, 1);
+                    updateMessagesList();
+                    saveMessages();
+                    selectedMessageIndex = -1;
+                }
+            });
+            
+            // 清空所有消息按钮
+            document.getElementById('clearAllMessagesButton').addEventListener('click', () => {
+                if (confirm(useTraditionalChinese ? '確定要清空所有消息嗎？' : '确定要清空所有消息吗？')) {
+                    messages = [];
+                    updateMessagesList();
+                    saveMessages();
+                    selectedMessageIndex = -1;
+                }
+            });
+            
+            // 监听配置更改，自动保存
+            const configElements = document.querySelectorAll('input[type="checkbox"], input[type="number"], select');
+            configElements.forEach(element => {
+                element.addEventListener('change', saveConfig);
+            });
+            
+            // 监听IPC消息
+            ipcRenderer.on('cs2-path-found', (event, path) => {
+                if (path.error) {
+                    updateStatus(path.error, true);
+                } else {
+                    document.getElementById('cs2PathTextBox').value = path;
+                    saveConfig();
+                    updateStatus(useTraditionalChinese ? 'CS2路徑已找到' : 'CS2路径已找到');
+                }
+            });
+            
+            ipcRenderer.on('cs2-path-selected', (event, path) => {
+                if (path.error) {
+                    updateStatus(path.error, true);
+                } else {
+                    document.getElementById('cs2PathTextBox').value = path;
+                    saveConfig();
+                }
+            });
+            
+            ipcRenderer.on('cfg-files-generated', (event, result) => {
+                if (result.success) {
+                    updateStatus(useTraditionalChinese ? 'CFG文件已成功生成' : 'CFG文件已成功生成');
+                } else {
+                    updateStatus(result.error, true);
+                }
+            });
+        }
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>
